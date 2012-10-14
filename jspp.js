@@ -2,16 +2,24 @@
 
 var sm = require("source-map");
 var argv = require('optimist').argv;
+var fs = require("fs"); 
 
 (function() { 
 	"use strict"; 
 
-	var sourceRoot = argv.r || argv.root || undefined; 
+	var sourceRoot = argv.r || argv.root || "."; 
 	var fileName   = argv.f || argv.file || undefined; 
+	var sourceMapName = argv.s || argv.sourcemap || undefined; 
 
 	if(!fileName) {
 		throw new Error("Must specify filename."); 
 	}
+
+	if(!sourceMapName) {
+		throw new Error("Must specify source-map."); 
+	}
+
+
 
 	var smg = new sm.SourceMapGenerator({ file : fileName, sourceRoot : sourceRoot });
 
@@ -62,9 +70,12 @@ var argv = require('optimist').argv;
 
 			process.stdout.write("\n"); 
 		}
+
+		process.stdout.write("//@ sourceMappingURL=");
+		process.stdout.write(sourceMapName);
 	});
 
 	process.stdin.on('end', function () {
-		console.log(smg.toString()); 
+		fs.writeFileSync(sourceMapName, smg.toString()); 
 	});
 }()); 
