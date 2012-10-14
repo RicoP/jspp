@@ -1,11 +1,11 @@
+# 1 "app.js"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "app.js"
+# 1 "utils.js" 1
 
 
-
-
-
-
-
-
+# 1 "assert.js" 1
 
 
 
@@ -13,7 +13,7 @@
  function __error(message, file, line) {
   throw new Error(message + "(" + file + ":" + line + ")");
  }
-
+# 4 "utils.js" 2
 
 var Utils = {
  logger : function(message) {
@@ -21,8 +21,6 @@ var Utils = {
   console.log(message);
  }
 };
-
+# 2 "app.js" 2
 
 Utils.logger("Hello world");
-
-//@ sourceMappingURL=compiled.js.map

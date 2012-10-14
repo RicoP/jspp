@@ -19,36 +19,41 @@ var fs = require("fs");
 		throw new Error("Must specify source-map."); 
 	}
 
-
-
 	var smg = new sm.SourceMapGenerator({ file : fileName, sourceRoot : sourceRoot });
 
 	var sources = []; 
 
-	function processHash(line, currentLine) {
-		var elem = line.split(/ /); 
-		var lineNum = parseInt(elem[1], 10); 
-		var fileName = elem[2].trim(); 
+	var currentLine = {
+		line : 0, 
+		file : ""
+	};
+
+	function processHash(currentline, linenum) {
+		var elem = currentline.split(/ /); 
+		var sourcelinenum = parseInt(elem[1], 10); 
+		var sourcefileName = elem[2].trim(); 
 
 		//remove trailing "
-		fileName = fileName.substring(1, fileName.length-1); 
+		sourcefileName = sourcefileName.substring(1, sourcefileName.length-1); 
 
 		//console.log(fileName); 
-		if(fileName === '<built-in>' || fileName === '<command-line>') {
+		if(sourcefileName === '<built-in>' || sourcefileName === '<command-line>') {
 			return; 
 		}
 
-		if(sources.indexOf(fileName) === -1) {
+		/*if(sources.indexOf(fileName) === -1) {
 			sources.push(fileName); 
-		}
+		}*/
 
 		//console.log("MAP", currentLine, lineNum, fileName); 
 
-		smg.addMapping({
+		/*smg.addMapping({
 			generated : { line : currentLine+1, column : 1 },
 			original : { line : lineNum, column : 1 }, 
 			source : fileName
-		});
+		});*/
+		currentLine.line = sourcelinenum+1; 
+		currentLine.file = sourcefileName;
 	}
 
 	process.stdin.resume();
@@ -58,16 +63,28 @@ var fs = require("fs");
 		var allText = chunk.toString(); 
 		var lines = allText.split(/[\n\r]/); 
 
+		var linenum = 1; 
 		for(var i = 0; i !== lines.length; i++) {
 			var line = lines[i]; 
 
 			if(line.charAt(0) !== "#") {
 				process.stdout.write(line); 
+
+				console.error(
+					"MAP", currentLine.file, ":", linenum+1, "->", currentLine.line-1
+				);
+				smg.addMapping({
+					generated : { line : linenum+1,          column : 1 },
+					original  : { line : currentLine.line-1, column : 1 }, 
+					source    : currentLine.file
+				});
 			} else {
 				//process # 
 				processHash(line, i+1); 
 			}
 
+			currentLine.line++; 
+			linenum++; 
 			process.stdout.write("\n"); 
 		}
 
