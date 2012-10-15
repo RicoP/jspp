@@ -23,6 +23,29 @@ var Utils = {
 };
 
 
-Utils.logger("Hello world");
+
+
+
+
+
+Utils.logger("hello");
+
+
+
+
+
+
+Utils.logger("ballo");
+
+
+
+
+
+
+Utils.logger("foobar");
+
+
+
+Utils.logger("That's all folks!");
 
 //@ sourceMappingURL=compiled.js.map

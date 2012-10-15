@@ -1,2 +1,2 @@
 #!/bin/sh
-cpp app.js | node ../jspp.js -f compiled.js -s compiled.js.map > compiled.js
+cpp app.js | node ../jspp.js -f compiled.js > compiled.js
